@@ -1,0 +1,16 @@
+{
+  "name": "vendor_name/filewithwatermark",
+  "description": "This plugin add a watermark in a PDF file",
+  "minimum-stability": "stable",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "Leonardo Aprigio da Silva",
+      "email": "leonardo.aprigio.silva@gmail.com"
+    }
+  ],
+  "require": {
+    "setasign/fpdf": "1.8.*",
+    "setasign/fpdi": "^2.0"
+  }
+}
