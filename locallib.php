@@ -1,4 +1,18 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * Private Filewithwatermark module utility functions
@@ -18,6 +32,11 @@ require_once($CFG->dirroot.'/mod/filewithwatermark/classes/fileutil.php');
 require_once($CFG->dirroot.'/mod/filewithwatermark/classes/pdfextractor.php');
 require_once($CFG->dirroot . '/mod/filewithwatermark/vendor/autoload.php');
 
+/**
+ * Set main file when have multiples files
+ *
+ * @param $data
+ */
 function filewithwatermark_set_mainfile($data) {
     global $DB;
     $fs = get_file_storage();
@@ -27,7 +46,7 @@ function filewithwatermark_set_mainfile($data) {
     $context = context_module::instance($cmid);
     if ($draftitemid) {
         $options = array('subdirs' => true, 'embed' => false);
-        if ($data->display == fileutil::$DISPLAY_EMBED) {
+        if ($data->display ==\mod_filewithwatermark\fileutil::$DISPLAY_EMBED) {
             $options['embed'] = true;
         }
         file_save_draft_area_files($draftitemid, $context->id, 'mod_filewithwatermark', 'content', 0, $options);
@@ -42,6 +61,7 @@ function filewithwatermark_set_mainfile($data) {
 
 /**
  * Print warning that file can not be found.
+ *
  * @param object $filewithwatermark
  * @param object $cm
  * @param object $course
@@ -65,6 +85,7 @@ function filewithwatermark_print_filenotfound($filewithwatermark, $cm, $course) 
 
 /**
  * Print filewithwatermark introduction.
+ *
  * @param object $filewithwatermark
  * @param object $cm
  * @param object $course
@@ -97,6 +118,7 @@ function filewithwatermark_print_intro($filewithwatermark, $cm, $course, $ignore
 
 /**
  * Print filewithwatermark header.
+ *
  * @param object $filewithwatermark
  * @param object $cm
  * @param object $course
@@ -113,6 +135,7 @@ function filewithwatermark_print_header($filewithwatermark, $cm, $course) {
 
 /**
  * Print filewithwatermark heading.
+ *
  * @param object $filewithwatermark
  * @param object $cm
  * @param object $course
@@ -126,35 +149,37 @@ function filewithwatermark_print_heading($filewithwatermark, $cm, $course, $notu
 
 /**
  * Decide the best display format.
+ *
  * @param object $filewithwatermark
  * @return int display type constant
  */
 function filewithwatermark_get_final_display_type($filewithwatermark) {
     global $CFG, $PAGE;
 
-    if ($filewithwatermark->display != fileutil::$DISPLAY_AUTO) {
+    if ($filewithwatermark->display !=\mod_filewithwatermark\fileutil::$DISPLAY_AUTO) {
         return $filewithwatermark->display;
     }
 
     if (empty($filewithwatermark->mainfile)) {
-        return fileutil::$DISPLAY_DOWNLOAD;
+        return\mod_filewithwatermark\fileutil::$DISPLAY_DOWNLOAD;
     } else {
         $mimetype = mimeinfo('type', $filewithwatermark->mainfile);
     }
 
     if (file_mimetype_in_typegroup($mimetype, 'archive')) {
-        return fileutil::$DISPLAY_DOWNLOAD;
+        return\mod_filewithwatermark\fileutil::$DISPLAY_DOWNLOAD;
     }
     if (file_mimetype_in_typegroup($mimetype, array('web_image', '.htm', 'web_video', 'web_audio'))) {
-        return fileutil::$DISPLAY_EMBED;
+        return\mod_filewithwatermark\fileutil::$DISPLAY_EMBED;
     }
 
     // let the browser deal with it somehow
-    return fileutil::$DISPLAY_OPEN;
+    return\mod_filewithwatermark\fileutil::$DISPLAY_OPEN;
 }
 
 /**
  * Display embedded filewithwatermark file.
+ *
  * @param object $filewithwatermark
  * @param object $cm
  * @param object $course
@@ -188,6 +213,7 @@ function filewithwatermark_display_embed($filewithwatermark, $cm, $course, $file
 
 /**
  * Display filewithwatermark frames.
+ *
  * @param object $filewithwatermark
  * @param object $cm
  * @param object $course
@@ -305,7 +331,12 @@ function filewithwatermark_get_optional_details($filewithwatermark, $cm) {
 }
 
 /**
- * Internal function - create click to open text with link.
+ * Internal function - create click to open text with link
+ *
+ * @param $file
+ * @param $revision
+ * @param string $extra
+ * @return mixed
  */
 function filewithwatermark_get_clicktoopen($file, $revision, $extra='') {
     global $CFG;
@@ -322,6 +353,7 @@ function filewithwatermark_get_clicktoopen($file, $revision, $extra='') {
 /**
  * Redirected to migrated resource if needed,
  * return if incorrect parameters specified
+ *
  * @param int $oldid
  * @param int $cmid
  * @return void
@@ -345,6 +377,7 @@ function filewithwatermark_redirect_if_migrated($oldid, $cmid) {
 
 /**
  * Print filewithwatermark info and workaround link when JS not available.
+ *
  * @param object $filewithwatermark
  * @param object $cm
  * @param object $course
@@ -361,7 +394,7 @@ function filewithwatermark_print_workaround($filewithwatermark, $cm, $course, $f
     $filewithwatermark->mainfile = $file->get_filename();
     echo '<div class="resourceworkaround">';
     switch (filewithwatermark_get_final_display_type($filewithwatermark)) {
-        case fileutil::$DISPLAY_POPUP:
+        case\mod_filewithwatermark\fileutil::$DISPLAY_POPUP:
             $path = '/'.$file->get_contextid().'/mod_filewithwatermark/content/'.$filewithwatermark->revision.$file->get_filepath().$file->get_filename();
             $fullurl = file_encode_url($CFG->wwwroot.'/pluginfile.php', $path, false);
             $options = empty($resource->displayoptions) ? array() : unserialize($filewithwatermark->displayoptions);
@@ -372,16 +405,16 @@ function filewithwatermark_print_workaround($filewithwatermark, $cm, $course, $f
             echo filewithwatermark_get_clicktoopen($file, $filewithwatermark->revision, $extra);
             break;
 
-        case fileutil::$DISPLAY_NEW:
+        case\mod_filewithwatermark\fileutil::$DISPLAY_NEW:
             $extra = 'onclick="this.target=\'_blank\'"';
             echo filewithwatermark_get_clicktoopen($file, $filewithwatermark->revision, $extra);
             break;
 
-        case fileutil::$DISPLAY_DOWNLOAD:
+        case\mod_filewithwatermark\fileutil::$DISPLAY_DOWNLOAD:
             echo filewithwatermark_get_clicktodownload($file, $filewithwatermark->revision);
             break;
 
-        case fileutil::$DISPLAY_OPEN:
+        case\mod_filewithwatermark\fileutil::$DISPLAY_OPEN:
         default:
             echo filewithwatermark_get_clicktoopen($file, $filewithwatermark->revision);
             break;
@@ -393,7 +426,11 @@ function filewithwatermark_print_workaround($filewithwatermark, $cm, $course, $f
 }
 
 /**
- * Internal function - create click to open text with link.
+ * Internal function - create click to open text with link
+ *
+ * @param $file
+ * @param $revision
+ * @return mixed
  */
 function filewithwatermark_get_clicktodownload($file, $revision) {
     global $CFG;
@@ -469,6 +506,17 @@ function filewithwatermark_get_file_details($filewithwatermark, $cm) {
     return $filedetails;
 }
 
+/**
+ * Retrieve user data from file
+ *
+ * @param $file
+ * @return array
+ * @throws \setasign\Fpdi\PdfParser\CrossReference\CrossReferenceException
+ * @throws \setasign\Fpdi\PdfParser\Filter\FilterException
+ * @throws \setasign\Fpdi\PdfParser\PdfParserException
+ * @throws \setasign\Fpdi\PdfParser\Type\PdfTypeException
+ * @throws \setasign\Fpdi\PdfReader\PdfReaderException
+ */
 function filewithwatermark_get_file_userdata($file) {
 
     $filepath = filewithwatermark_create_tempdir();

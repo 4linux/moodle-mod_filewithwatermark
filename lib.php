@@ -1,4 +1,18 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * @package    mod_filewithwatermark
@@ -10,9 +24,11 @@ defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->dirroot . '/mod/filewithwatermark/vendor/autoload.php');
 require_once($CFG->dirroot.'/mod/filewithwatermark/classes/pdfeditor.php');
+require_once($CFG->dirroot.'/mod/filewithwatermark/classes/fileutil.php');
 
 /**
  * List of features supported in Filewithwatermark module
+ *
  * @param string $feature FEATURE_xx constant for requested feature
  * @return mixed True if module supports feature, false if not, null if doesn't know
  */
@@ -34,10 +50,11 @@ function filewithwatermark_supports($feature) {
 
 /**
  * Add new instance
+ *
+ * @param $data
  * @param Object $filewithwatermark file data
  * @return int filewithwatermark id
  */
-
 function filewithwatermark_add_instance($data, $filewithwatermark) {
     global $CFG, $DB;
 
@@ -61,6 +78,7 @@ function filewithwatermark_add_instance($data, $filewithwatermark) {
 
 /**
  * Update a instance
+ *
  * @param Object $filewithwatermark filewithwatermark data
  * @return int filewithwatermark id
  */
@@ -86,6 +104,7 @@ function filewithwatermark_update_instance($data) {
 
 /**
  * Delete a instance
+ *
  * @param int $id filewithwatermark id
  * @return bool
  */
@@ -158,10 +177,10 @@ function filewithwatermark_pluginfile($course, $cm, $context, $filearea, $args, 
                 }
             }
             $filewithwatermark = $DB->get_record('filewithwatermark', array('id'=>$cm->instance), 'id, legacyfiles', MUST_EXIST);
-            if ($filewithwatermark->legacyfiles != fileutil::$LEGACYFILES_ACTIVE) {
+            if ($filewithwatermark->legacyfiles != \mod_filewithwatermark\fileutil::$LEGACYFILES_ACTIVE) {
                 return false;
             }
-            if (!$file = fileutil::try_file_migration('/'.$relativepath, $cm->id, $cm->course, 'mod_filewithwatermark', 'content', 0)) {
+            if (!$file = \mod_filewithwatermark\fileutil::try_file_migration('/'.$relativepath, $cm->id, $cm->course, 'mod_filewithwatermark', 'content', 0)) {
                 return false;
             }
             // file migrate - update flag
@@ -212,11 +231,11 @@ function filewithwatermark_view($filewithwatermark, $course, $cm, $context) {
  */
 function filewithwatermark_set_display_options($data) {
     $displayoptions = array();
-    if ($data->display == fileutil::$DISPLAY_POPUP) {
+    if ($data->display == \mod_filewithwatermark\fileutil::$DISPLAY_POPUP) {
         $displayoptions['popupwidth']  = $data->popupwidth;
         $displayoptions['popupheight'] = $data->popupheight;
     }
-    if (in_array($data->display, array(fileutil::$DISPLAY_AUTO, fileutil::$DISPLAY_EMBED, fileutil::$DISPLAY_FRAME))) {
+    if (in_array($data->display, array(\mod_filewithwatermark\fileutil::$DISPLAY_AUTO, \mod_filewithwatermark\fileutil::$DISPLAY_EMBED, \mod_filewithwatermark\fileutil::$DISPLAY_FRAME))) {
         $displayoptions['printintro']   = (int)!empty($data->printintro);
     }
     if (!empty($data->showsize)) {
@@ -232,6 +251,8 @@ function filewithwatermark_set_display_options($data) {
 }
 
 /**
+ * Add watermark to a file
+ *
  * @param stored_file $file
  * @param bool $forcedownload
  * @throws \setasign\Fpdi\PdfParser\CrossReference\CrossReferenceException
@@ -263,6 +284,8 @@ function filewithwatermark_add_watermark($file, $forcedownload) {
 }
 
 /**
+ * Create a watermarked file
+ *
  * @param stdClass $file
  * @param string $filepath
  * @param string $filename
@@ -276,7 +299,7 @@ function filewithwatermark_add_watermark($file, $forcedownload) {
 
 function filewithwatermark_create_watermarkedfile($file, $filepath, $filename) {
 
-    $pdf_editor = new pdfeditor();
+    $pdf_editor = new \mod_filewithwatermark\pdfeditor();
 
     try {
         $filestream = fopen($filepath . $filename, 'a+');
@@ -315,7 +338,6 @@ function filewithwatermark_create_watermarkedfile($file, $filepath, $filename) {
  * @param string $filepath
  * @return string
  */
-
 function filewithwatermark_generate_filename($file, $filepath) {
     $filename =  uniqid("filewithwatermark", true) . $file->get_filename();;
 
@@ -332,7 +354,6 @@ function filewithwatermark_generate_filename($file, $filepath) {
  *
  * @return string
  */
-
 function filewithwatermark_create_tempdir() {
     global $CFG;
 
@@ -383,14 +404,14 @@ function mod_filewithwatermark_core_calendar_provide_event_action(calendar_event
 }
 
 /**
-* Given a course_module object, this function returns any
-* "extra" information that may be needed when printing
-* this activity in a course listing.
+ * Given a course_module object, this function returns any
+ * "extra" information that may be needed when printing
+ * this activity in a course listing.
  *
  * See {@link get_array_of_activities()} in course/lib.php
-*
+ *
  * @param stdClass $coursemodule
-* @return cached_cm_info info
+ * @return cached_cm_info info
 */
 function filewithwatermark_get_coursemodule_info($coursemodule) {
     global $CFG, $DB;
@@ -427,7 +448,7 @@ function filewithwatermark_get_coursemodule_info($coursemodule) {
 
     $display = filewithwatermark_get_final_display_type($filewithwatermark);
 
-    if ($display == fileutil::$DISPLAY_POPUP) {
+    if ($display == \mod_filewithwatermark\fileutil::$DISPLAY_POPUP) {
         $fullurl = "$CFG->wwwroot/mod/filewithwatermark/view.php?id=$coursemodule->id&amp;redirect=1";
         $options = empty($filewithwatermark->displayoptions) ? array() : unserialize($filewithwatermark->displayoptions);
         $width  = empty($options['popupwidth'])  ? 620 : $options['popupwidth'];
@@ -435,7 +456,7 @@ function filewithwatermark_get_coursemodule_info($coursemodule) {
         $wh = "width=$width,height=$height,toolbar=no,location=no,menubar=no,copyhistory=no,status=no,directories=no,scrollbars=yes,resizable=yes";
         $info->onclick = "window.open('$fullurl', '', '$wh'); return false;";
 
-    } else if ($display == fileutil::$DISPLAY_NEW) {
+    } else if ($display == \mod_filewithwatermark\fileutil::$DISPLAY_NEW) {
         $fullurl = "$CFG->wwwroot/mod/filewithwatermark/view.php?id=$coursemodule->id&amp;redirect=1";
         $info->onclick = "window.open('$fullurl'); return false;";
 

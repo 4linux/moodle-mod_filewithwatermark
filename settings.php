@@ -1,4 +1,18 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * Filewithwatermark module admin settings and defaults
@@ -16,20 +30,22 @@ require_once($CFG->dirroot.'/mod/filewithwatermark/classes/fileutil.php');
 
 if ($ADMIN->fulltree) {
 
-    $displayoptions = \fileutil::get_displayoptions(array(fileutil::$DISPLAY_AUTO,
-                                                           fileutil::$DISPLAY_EMBED,
-                                                           fileutil::$DISPLAY_FRAME,
-                                                           fileutil::$DISPLAY_DOWNLOAD,
-                                                           fileutil::$DISPLAY_OPEN,
-                                                           fileutil::$DISPLAY_NEW,
-                                                           fileutil::$DISPLAY_POPUP,
-                                                          ));
-    $defaultdisplayoptions = array(fileutil::$DISPLAY_AUTO,
-                                   fileutil::$DISPLAY_EMBED,
-                                   fileutil::$DISPLAY_DOWNLOAD,
-                                   fileutil::$DISPLAY_OPEN,
-                                   fileutil::$DISPLAY_POPUP,
-                                  );
+    $displayoptions = \mod_filewithwatermark\fileutil::get_displayoptions(array(
+        \mod_filewithwatermark\fileutil::$DISPLAY_AUTO,
+        \mod_filewithwatermark\fileutil::$DISPLAY_EMBED,
+        \mod_filewithwatermark\fileutil::$DISPLAY_FRAME,
+        \mod_filewithwatermark\fileutil::$DISPLAY_DOWNLOAD,
+        \mod_filewithwatermark\fileutil::$DISPLAY_OPEN,
+        \mod_filewithwatermark\fileutil::$DISPLAY_NEW,
+        \mod_filewithwatermark\fileutil::$DISPLAY_POPUP,
+    ));
+    $defaultdisplayoptions = array(
+        \mod_filewithwatermark\fileutil::$DISPLAY_AUTO,
+        \mod_filewithwatermark\fileutil::$DISPLAY_EMBED,
+        \mod_filewithwatermark\fileutil::$DISPLAY_DOWNLOAD,
+        \mod_filewithwatermark\fileutil::$DISPLAY_OPEN,
+        \mod_filewithwatermark\fileutil::$DISPLAY_POPUP,
+    );
 
     //--- general settings -----------------------------------------------------------------------------------
     $settings->add(new admin_setting_configtext('filewithwatermark/framesize',
@@ -44,7 +60,7 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configcheckbox('filewithwatermark/printintro',
         get_string('printintro', 'filewithwatermark'), get_string('printintroexplain', 'filewithwatermark'), 1));
     $settings->add(new admin_setting_configselect('filewithwatermark/display',
-        get_string('displayselect', 'filewithwatermark'), get_string('displayselectexplain', 'filewithwatermark'), fileutil::$DISPLAY_AUTO,
+        get_string('displayselect', 'filewithwatermark'), get_string('displayselectexplain', 'filewithwatermark'),\mod_filewithwatermark\fileutil::$DISPLAY_AUTO,
         $displayoptions));
     $settings->add(new admin_setting_configcheckbox('filewithwatermark/showsize',
         get_string('showsize', 'filewithwatermark'), get_string('showsize_desc', 'filewithwatermark'), 0));

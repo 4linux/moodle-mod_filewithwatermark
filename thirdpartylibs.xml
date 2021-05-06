@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<libraries>
+    <library>
+        <location>vendor/setasign/fpdf</location>
+        <name>Fpdf</name>
+        <version>1.8</version>
+        <license>GPL</license>
+        <licenseversion>3.0+</licenseversion>
+    </library>
+    <library>
+        <location>vendor/setasign/fpdi</location>
+        <name>Fpdi</name>
+        <version>2.0</version>
+        <license>GPL</license>
+        <licenseversion>3.0+</licenseversion>
+    </library>
+</libraries>

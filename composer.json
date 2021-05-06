@@ -2,7 +2,7 @@
   "name": "vendor_name/filewithwatermark",
   "description": "This plugin add a watermark in a PDF file",
   "minimum-stability": "stable",
-  "license": "proprietary",
+  "license": "GPL-3.0-or-later",
   "authors": [
     {
       "name": "Leonardo Aprigio da Silva",

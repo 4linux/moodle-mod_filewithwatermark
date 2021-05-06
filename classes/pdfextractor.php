@@ -1,4 +1,18 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * The mod_filewithwatermark PDF text extractor class.
@@ -8,7 +22,23 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+namespace mod_filewithwatermark;
+
+/**
+ * The mod_filewithwatermark PDF text extractor class.
+ *
+ * @package    mod_filewithwatermark
+ * @copyright  2021 4Linux  {@link https://4linux.com.br/}
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class pdfextractor {
+
+    /**
+     * Decode ASCII 85
+     *
+     * @param $input
+     * @return string
+     */
     private function decode_ascii_85($input) {
         $output = "";
 
@@ -59,6 +89,13 @@ class pdfextractor {
 
         return $output;
     }
+
+    /**
+     * Decode ASCII HEX
+     *
+     * @param $input
+     * @return string
+     */
     private function decode_ascii_hex($input) {
         $output = "";
 
@@ -103,9 +140,23 @@ class pdfextractor {
 
         return $output;
     }
+
+    /**
+     * Decode Flate
+     *
+     * @param $input
+     * @return false|string
+     */
     private function decode_flate($input) {
         return @gzuncompress($input);
     }
+
+    /**
+     * Get options from a object
+     *
+     * @param $object
+     * @return array
+     */
     private function get_object_options($object) {
         $options = array();
         if (preg_match("#<<(.*)>>#ismU", $object, $options)) {
@@ -127,6 +178,14 @@ class pdfextractor {
 
         return $options;
     }
+
+    /**
+     * Get decoded stream
+     *
+     * @param $stream
+     * @param $options
+     * @return false|mixed|string
+     */
     private function get_decoded_stream($stream, $options) {
         $data = "";
         if (empty($options["Filter"]))
@@ -147,6 +206,13 @@ class pdfextractor {
         }
         return $data;
     }
+
+    /**
+     * Get Dirty texts
+     *
+     * @param $texts
+     * @param $textContainers
+     */
     private function get_dirty_texts(&$texts, $textContainers) {
         for ($j = 0; $j < count($textContainers); $j++) {
             if (preg_match_all("#\[(.*)\]\s*TJ#ismU", $textContainers[$j], $parts))
@@ -155,6 +221,13 @@ class pdfextractor {
                 $texts = array_merge($texts, @$parts[1]);
         }
     }
+
+    /**
+     * Get char transformations
+     *
+     * @param $transformations
+     * @param $stream
+     */
     private function get_char_transformations(&$transformations, $stream) {
         preg_match_all("#([0-9]+)\s+beginbfchar(.*)endbfchar#ismU", $stream, $chars, PREG_SET_ORDER);
         preg_match_all("#([0-9]+)\s+beginbfrange(.*)endbfrange#ismU", $stream, $ranges, PREG_SET_ORDER);
@@ -189,6 +262,14 @@ class pdfextractor {
             }
         }
     }
+
+    /**
+     * Get texts using transformations
+     *
+     * @param $texts
+     * @param $transformations
+     * @return string
+     */
     private function get_text_using_transformations($texts, $transformations) {
         $document = "";
         for ($i = 0; $i < count($texts); $i++) {
@@ -252,6 +333,12 @@ class pdfextractor {
         return $document;
     }
 
+    /**
+     * Extract text
+     *
+     * @param $pdfcontent
+     * @return string
+     */
     public function extract_text($pdfcontent) {
 
         if (empty($pdfcontent))

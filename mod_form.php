@@ -1,4 +1,18 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 defined('MOODLE_INTERNAL') || die;
 
@@ -6,6 +20,7 @@ require_once($CFG->dirroot.'/course/moodleform_mod.php');
 require_once($CFG->dirroot.'/mod/filewithwatermark/locallib.php');
 require_once($CFG->dirroot.'/mod/filewithwatermark/classes/fileutil.php');
 
+use mod_filewithwatermark\fileutil;
 
 /**
  * Filewithwatermark configuration form
@@ -51,9 +66,9 @@ class mod_filewithwatermark_mod_form extends moodleform_mod {
         $mform->addElement('header', 'optionssection', get_string('appearance'));
 
         if ($this->current->instance) {
-            $options = fileutil::get_displayoptions(explode(',', $config->displayoptions), $this->current->display);
+            $options =\mod_filewithwatermark\fileutil::get_displayoptions(explode(',', $config->displayoptions), $this->current->display);
         } else {
-            $options = fileutil::get_displayoptions(explode(',', $config->displayoptions));
+            $options =\mod_filewithwatermark\fileutil::get_displayoptions(explode(',', $config->displayoptions));
         }
 
         if (count($options) == 1) {
@@ -80,7 +95,7 @@ class mod_filewithwatermark_mod_form extends moodleform_mod {
         if (array_key_exists(fileutil::$DISPLAY_POPUP, $options)) {
             $mform->addElement('text', 'popupwidth', get_string('popupwidth', 'filewithwatermark'), array('size'=>3));
             if (count($options) > 1) {
-                $mform->hideIf('popupwidth', 'display', 'noteq', fileutil::$DISPLAY_POPUP);
+                $mform->hideIf('popupwidth', 'display', 'noteq',\mod_filewithwatermark\fileutil::$DISPLAY_POPUP);
             }
             $mform->setType('popupwidth', PARAM_INT);
             $mform->setDefault('popupwidth', $config->popupwidth);
@@ -88,7 +103,7 @@ class mod_filewithwatermark_mod_form extends moodleform_mod {
 
             $mform->addElement('text', 'popupheight', get_string('popupheight', 'filewithwatermark'), array('size'=>3));
             if (count($options) > 1) {
-                $mform->hideIf('popupheight', 'display', 'noteq', fileutil::$DISPLAY_POPUP);
+                $mform->hideIf('popupheight', 'display', 'noteq',\mod_filewithwatermark\fileutil::$DISPLAY_POPUP);
             }
             $mform->setType('popupheight', PARAM_INT);
             $mform->setDefault('popupheight', $config->popupheight);
@@ -99,10 +114,10 @@ class mod_filewithwatermark_mod_form extends moodleform_mod {
             array_key_exists(fileutil::$DISPLAY_EMBED, $options) or
             array_key_exists(fileutil::$DISPLAY_FRAME, $options)) {
             $mform->addElement('checkbox', 'printintro', get_string('printintro', 'filewithwatermark'));
-            $mform->hideIf('printintro', 'display', 'eq', fileutil::$DISPLAY_POPUP);
-            $mform->hideIf('printintro', 'display', 'eq', fileutil::$DISPLAY_DOWNLOAD);
-            $mform->hideIf('printintro', 'display', 'eq', fileutil::$DISPLAY_OPEN);
-            $mform->hideIf('printintro', 'display', 'eq', fileutil::$DISPLAY_NEW);
+            $mform->hideIf('printintro', 'display', 'eq',\mod_filewithwatermark\fileutil::$DISPLAY_POPUP);
+            $mform->hideIf('printintro', 'display', 'eq',\mod_filewithwatermark\fileutil::$DISPLAY_DOWNLOAD);
+            $mform->hideIf('printintro', 'display', 'eq',\mod_filewithwatermark\fileutil::$DISPLAY_OPEN);
+            $mform->hideIf('printintro', 'display', 'eq',\mod_filewithwatermark\fileutil::$DISPLAY_NEW);
             $mform->setDefault('printintro', $config->printintro);
         }
 

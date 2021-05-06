@@ -1,4 +1,18 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * The mod_filewithwatermark others file utilities.
@@ -7,6 +21,8 @@
  * @copyright  2021 4Linux  {@link https://4linux.com.br/}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
+namespace mod_filewithwatermark;
 
 class fileutil
 {
@@ -36,6 +52,7 @@ class fileutil
 
     /**
      * Try on demand migration of file from old course files
+     *
      * @param string $filepath old file path
      * @param int $cmid migrated course module if
      * @param int $courseid
@@ -90,6 +107,7 @@ class fileutil
 
     /**
      * Returns list of available display options
+     *
      * @param array $enabled list of options enabled in module configuration
      * @param int $current current display options for existing instances
      * @return array of key=>name pairs
@@ -126,6 +144,7 @@ class fileutil
 
     /**
      * Tries to guess correct mimetype for arbitrary URL
+     *
      * @param string $fullurl
      * @return string mimetype
      */
@@ -199,6 +218,7 @@ class fileutil
 
     /**
      * Returns general link or pdf embedding html.
+     *
      * @param string $fullurl
      * @param string $title
      * @param string $clicktoopen
