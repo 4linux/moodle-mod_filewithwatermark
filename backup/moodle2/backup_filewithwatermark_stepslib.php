@@ -36,7 +36,7 @@ class backup_filewithwatermark_activity_structure_step extends backup_activity_s
         $userinfo = $this->get_setting_value('userinfo');
 
         $filewithwatermark = new backup_nested_element('filewithwatermark', array('id'), array(
-            'name', 'intro', 'introformat', 'tobemigrated',
+            'name', 'intro', 'introformat',
             'legacyfiles', 'legacyfileslast', 'display',
             'displayoptions', 'filterfiles', 'revision', 'timemodified'));
 

@@ -130,7 +130,6 @@ class moodle1_mod_filewithwatermark_handler extends moodle1_mod_handler {
         $filewithwatermark['name']            = $data['name'];
         $filewithwatermark['intro']           = $data['intro'];
         $filewithwatermark['introformat']     = $data['introformat'];
-        $filewithwatermark['tobemigrated']    = 0;
         $filewithwatermark['legacyfiles']     = \mod_filewithwatermark\fileutil::$LEGACYFILES_ACTIVE;
         $filewithwatermark['legacyfileslast'] = null;
         $filewithwatermark['filterfiles']     = 0;

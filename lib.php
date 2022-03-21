@@ -422,7 +422,7 @@ function filewithwatermark_get_coursemodule_info($coursemodule) {
     $context = context_module::instance($coursemodule->id);
 
     if (!$filewithwatermark = $DB->get_record('filewithwatermark', array('id'=>$coursemodule->instance),
-        'id, name, display, displayoptions, tobemigrated, revision, intro, introformat')) {
+        'id, name, display, displayoptions, revision, intro, introformat')) {
         return NULL;
     }
 
@@ -430,16 +430,11 @@ function filewithwatermark_get_coursemodule_info($coursemodule) {
     $info->name = $filewithwatermark->name;
     if ($coursemodule->showdescription) {
         // Convert intro to html. Do not filter cached version, filters run at display time.
-        $info->content = format_module_intro('resource', $filewithwatermark, $coursemodule->id, false);
-    }
-
-    if ($filewithwatermark->tobemigrated) {
-        $info->icon ='i/invalid';
-        return $info;
+        $info->content = format_module_intro('filewithwatermark', $filewithwatermark, $coursemodule->id, false);
     }
 
     $fs = get_file_storage();
-    $files = $fs->get_area_files($context->id, 'mod_resource', 'content', 0, 'sortorder DESC, id ASC', false, 0, 0, 1);
+    $files = $fs->get_area_files($context->id, 'mod_filewithwatermark', 'content', 0, 'sortorder DESC, id ASC', false, 0, 0, 1);
     if (count($files) >= 1) {
         $mainfile = reset($files);
         $info->icon = file_file_icon($mainfile, 24);

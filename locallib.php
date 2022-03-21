@@ -70,15 +70,12 @@ function filewithwatermark_set_mainfile($data) {
 function filewithwatermark_print_filenotfound($filewithwatermark, $cm, $course) {
     global $DB, $OUTPUT;
 
-    $filewithwatermark_old = $DB->get_record('filewithwatermark_old', array('oldid'=>$filewithwatermark->id));
     filewithwatermark_print_header($filewithwatermark, $cm, $course);
     filewithwatermark_print_heading($filewithwatermark, $cm, $course);
     filewithwatermark_print_intro($filewithwatermark, $cm, $course);
-    if ($filewithwatermark_old) {
-        echo $OUTPUT->notification(get_string('notmigrated', 'filewithwatermark', $filewithwatermark_old->type));
-    } else {
-        echo $OUTPUT->notification(get_string('filenotfound', 'filewithwatermark'));
-    }
+
+    echo $OUTPUT->notification(get_string('filenotfound', 'filewithwatermark'));
+
     echo $OUTPUT->footer();
     die;
 }
@@ -351,31 +348,6 @@ function filewithwatermark_get_clicktoopen($file, $revision, $extra='') {
 }
 
 /**
- * Redirected to migrated resource if needed,
- * return if incorrect parameters specified
- *
- * @param int $oldid
- * @param int $cmid
- * @return void
- */
-function filewithwatermark_redirect_if_migrated($oldid, $cmid) {
-    global $DB, $CFG;
-
-    if ($oldid) {
-        $old = $DB->get_record('filewithwatermark_old', array('oldid'=>$oldid));
-    } else {
-        $old = $DB->get_record('filewithwatermark_old', array('cmid'=>$cmid));
-    }
-
-    if (!$old) {
-        return;
-    }
-
-    redirect("$CFG->wwwroot/mod/$old->newmodule/view.php?id=".$old->cmid);
-}
-
-
-/**
  * Print filewithwatermark info and workaround link when JS not available.
  *
  * @param object $filewithwatermark
@@ -394,7 +366,7 @@ function filewithwatermark_print_workaround($filewithwatermark, $cm, $course, $f
     $filewithwatermark->mainfile = $file->get_filename();
     echo '<div class="resourceworkaround">';
     switch (filewithwatermark_get_final_display_type($filewithwatermark)) {
-        case\mod_filewithwatermark\fileutil::$DISPLAY_POPUP:
+        case \mod_filewithwatermark\fileutil::$DISPLAY_POPUP:
             $path = '/'.$file->get_contextid().'/mod_filewithwatermark/content/'.$filewithwatermark->revision.$file->get_filepath().$file->get_filename();
             $fullurl = file_encode_url($CFG->wwwroot.'/pluginfile.php', $path, false);
             $options = empty($resource->displayoptions) ? array() : unserialize($filewithwatermark->displayoptions);
@@ -405,16 +377,16 @@ function filewithwatermark_print_workaround($filewithwatermark, $cm, $course, $f
             echo filewithwatermark_get_clicktoopen($file, $filewithwatermark->revision, $extra);
             break;
 
-        case\mod_filewithwatermark\fileutil::$DISPLAY_NEW:
+        case \mod_filewithwatermark\fileutil::$DISPLAY_NEW:
             $extra = 'onclick="this.target=\'_blank\'"';
             echo filewithwatermark_get_clicktoopen($file, $filewithwatermark->revision, $extra);
             break;
 
-        case\mod_filewithwatermark\fileutil::$DISPLAY_DOWNLOAD:
+        case \mod_filewithwatermark\fileutil::$DISPLAY_DOWNLOAD:
             echo filewithwatermark_get_clicktodownload($file, $filewithwatermark->revision);
             break;
 
-        case\mod_filewithwatermark\fileutil::$DISPLAY_OPEN:
+        case \mod_filewithwatermark\fileutil::$DISPLAY_OPEN:
         default:
             echo filewithwatermark_get_clicktoopen($file, $filewithwatermark->revision);
             break;

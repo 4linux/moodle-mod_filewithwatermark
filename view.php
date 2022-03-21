@@ -39,14 +39,12 @@ $forceview = optional_param('forceview', 0, PARAM_BOOL);
 
 if ($r) {
     if (!$filewithwatermark = $DB->get_record('filewithwatermark', array('id'=>$r))) {
-        filewithwatermark_redirect_if_migrated($r, 0);
         print_error('invalidaccessparameter');
     }
     $cm = get_coursemodule_from_instance('filewithwatermark', $filewithwatermark->id, $filewithwatermark->course, false, MUST_EXIST);
 
 } else {
     if (!$cm = get_coursemodule_from_id('filewithwatermark', $id)) {
-        filewithwatermark_redirect_if_migrated(0, $id);
         print_error('invalidcoursemodule');
     }
     $filewithwatermark = $DB->get_record('filewithwatermark', array('id'=>$cm->instance), '*', MUST_EXIST);
@@ -63,11 +61,6 @@ require_capability('mod/filewithwatermark:view', $context);
 filewithwatermark_view($filewithwatermark, $course, $cm, $context);
 
 $PAGE->set_url('/mod/filewithwatermark/view.php', array('id' => $cm->id));
-
-if ($filewithwatermark->tobemigrated) {
-    filewithwatermark_print_tobemigrated($filewithwatermark, $cm, $course);
-    die;
-}
 
 $fs = get_file_storage();
 $files = $fs->get_area_files($context->id, 'mod_filewithwatermark', 'content', 0, 'sortorder DESC, id ASC', false); // TODO: this is not very efficient!!
@@ -104,10 +97,10 @@ if ($redirect && !$forceview) {
 }
 
 switch ($displaytype) {
-    case\mod_filewithwatermark\fileutil::$DISPLAY_EMBED:
+    case \mod_filewithwatermark\fileutil::$DISPLAY_EMBED:
         filewithwatermark_display_embed($filewithwatermark, $cm, $course, $file);
         break;
-    case\mod_filewithwatermark\fileutil::$DISPLAY_FRAME:
+    case \mod_filewithwatermark\fileutil::$DISPLAY_FRAME:
         filewithwatermark_display_frame($filewithwatermark, $cm, $course, $file);
         break;
     default:

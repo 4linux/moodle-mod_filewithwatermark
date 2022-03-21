@@ -23,22 +23,30 @@
 defined('MOODLE_INTERNAL') || die;
 
 function xmldb_filewithwatermark_upgrade($oldversion) {
-    global $CFG;
+    global $CFG, $DB;
 
-    // Automatically generated Moodle v3.5.0 release upgrade line.
-    // Put any upgrade step following this.
+    $dbman = $DB->get_manager();
 
-    // Automatically generated Moodle v3.6.0 release upgrade line.
-    // Put any upgrade step following this.
+    if ($oldversion < 2022031600) {
+        $table = new xmldb_table('filewithwatermark_old');
 
-    // Automatically generated Moodle v3.7.0 release upgrade line.
-    // Put any upgrade step following this.
+        // Conditionally launch add field completion_on_view_time.
+        if ($dbman->table_exists($table)) {
+            $dbman->drop_table($table);
+        }
 
-    // Automatically generated Moodle v3.8.0 release upgrade line.
-    // Put any upgrade step following this.
+        $table = new xmldb_table('filewithwatermark');
 
-    // Automatically generated Moodle v3.9.0 release upgrade line.
-    // Put any upgrade step following this.
+        $field = new xmldb_field('tobemigrated', XMLDB_TYPE_INTEGER, '1', null, null, null, '0',
+            'legacyfiles');
+
+        if ($dbman->field_exists($table, $field)) {
+            $dbman->drop_field($table, $field);
+        }
+
+        upgrade_mod_savepoint(true, 2022031600, 'filewithwatermark');
+
+    }
 
     return true;
 }

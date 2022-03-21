@@ -131,19 +131,10 @@ class mod_filewithwatermark_mod_form extends moodleform_mod {
         $mform->setDefault('revision', 1);
     }
 
-    function definition_after_data() {
-        if ($this->current->instance and $this->current->tobemigrated) {
-
-            return;
-        }
-
-        parent::definition_after_data();
-    }
-
     function data_preprocessing(&$default_values)
     {
 
-        if ($this->current->instance and !$this->current->tobemigrated) {
+        if ($this->current->instance) {
             $draftitemid = file_get_submitted_draft_itemid('files');
             file_prepare_draft_area($draftitemid, $this->context->id, 'mod_filewithwatermark', 'content', 0, array('subdirs'=>true));
             $default_values['files'] = $draftitemid;
